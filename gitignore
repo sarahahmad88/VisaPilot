@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets / environment variables
+.env
+.streamlit/secrets.toml
+
+# Caches and local model files
+.cache/
+*.log
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
