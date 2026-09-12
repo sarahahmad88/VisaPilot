@@ -3,14 +3,13 @@ import os
 import re
 import json
 import hashlib
-from io import BytesIO
 from datetime import datetime
 
 import faiss
 import numpy as np
 import streamlit as st
 from groq import Groq
-from pypdf import PdfReader
+import pymupdf
 from sentence_transformers import SentenceTransformer
 
 
@@ -22,7 +21,7 @@ from sentence_transformers import SentenceTransformer
 #   Visa type: Student
 #
 # Stack:
-#   Streamlit + Python + FAISS + Sentence Transformers + Groq
+#   Streamlit + Python + FAISS + Sentence Transformers + PyMuPDF + Groq
 #
 # IMPORTANT:
 # - Readiness is NOT visa approval probability.
@@ -555,10 +554,11 @@ def extract_text_from_upload(uploaded_file):
 
     if name.endswith(".pdf"):
         try:
-            reader = PdfReader(BytesIO(data))
+            doc = pymupdf.open(stream=data, filetype="pdf")
             pages = []
-            for page in reader.pages:
-                pages.append(page.extract_text() or "")
+            for page in doc:
+                pages.append(page.get_text("text") or "")
+            doc.close()
             return "\n".join(pages).strip(), None
         except Exception as exc:
             return "", f"PDF extraction failed: {type(exc).__name__}"
